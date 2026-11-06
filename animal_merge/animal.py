@@ -2,13 +2,14 @@
 
 import pymunk
 import pygame
-
+ANIMAL_COLLISION = 1
 
 class Animal:
     size = 0
     color = (0, 0, 0)
     points = 0
     image = None
+    level = 0
     def __init__(self, x, y,space):
         mass =self.size * 0.01
         moment = pymunk.moment_for_circle(mass, 0, self.size)
@@ -18,6 +19,7 @@ class Animal:
         self.shape = pymunk.Circle(self.body, self.size)
         self.shape.elasticity = 0.5
         self.shape.friction = 1
+        self.shape.collision_type = ANIMAL_COLLISION
         space.add(self.body, self.shape)
 
     def draw(self, screen):
