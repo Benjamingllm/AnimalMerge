@@ -1,68 +1,45 @@
 import pygame
-import pymunk
-from .conteneur import Conteneur
-from .merge import MergeManager
-from .animal import Souris, Hamster, Renard, Chien, Mouton, Vache
-import random
-PHYSICS_TIME_STEP = 1 / 120.0
+from .game import Game
+from .game_over import GameOver
+from .menu import Menu
+from .config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS
 class App:
-    def __init__(self,settings):
-        self.settings = settings
-        self.animals = {}
-        self.screen = pygame.display.set_mode((self.settings.window_width,self.settings.window_height))
-        self.fps = self.settings.fps
-        #crer la boucle du jeu
+    def __init__(self):
+        pygame.init()
+        self.session = {"name": "", "score": 0,"best" : 0}
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.scene = Menu(self.session)
         self.running = True
-        self.accumulated_time = 0.0
-        self.background_color = settings.background_color
+        self.scenes = {
+            "game_over" : GameOver,
+            "game" : Game,
+            "menu" : Menu
+        }
+        
 
-        self.space = pymunk.Space()
-        self.space.gravity = (0, 900)
-        self.conteneur = Conteneur(self.space,350, 400, (255, 0, 0), 200, 150)
-        self.merge_manager = MergeManager(self.space, self.animals)
     def run(self):
         clock = pygame.time.Clock()
         while self.running:
-            delta_time = clock.tick(self.fps) / 1000.
+            delta_time = clock.tick(FPS) / 1000.
             self.handle_events()
-            self.update(delta_time)
-
-    
-
-            self.draw()
+            self.scene.update(delta_time)
+            self.scene.draw(self.screen)
+            pygame.display.flip()
+            if self.scene.next_scene != None:
+                self.scene = self.scenes[self.scene.next_scene](self.session)
         pygame.quit()
 
-    def draw(self):
-        self.screen.fill(self.background_color)
-        self.conteneur.draw(self.screen)
-        for animal in self.animals.values():
-            animal.draw(self.screen)
-        pygame.display.flip()
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN:
-                self.inputs(event.key)
+            self.scene.handle_event(event)
 
-    def update(self, delta_time):
-        self.accumulated_time += delta_time
-        while self.accumulated_time >= PHYSICS_TIME_STEP:
-            self.space.step(PHYSICS_TIME_STEP)
-            self.accumulated_time -= PHYSICS_TIME_STEP
-            self.merge_manager.resolve_merges()
 
-    def pick_random_animal(self):
-        animal_classes = [Souris, Hamster, Renard, Chien, Mouton, Vache]
-        selected_class = random.choice(animal_classes)
+  
 
-        x = pygame.mouse.get_pos()[0]
-        y = 10
-        return selected_class(x, y,self.space)
+    
+    
 
-    def inputs(self,key):
-        if key == pygame.K_SPACE:
-            animal = self.pick_random_animal()
-            self.merge_manager.add_animal(animal)
-
+    

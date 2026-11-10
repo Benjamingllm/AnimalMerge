@@ -1,66 +1,80 @@
 
-
 import pymunk
 import pygame
+import math
+from .config import ASSETS_DIR
 ANIMAL_COLLISION = 1
 
 class Animal:
     size = 0
-    color = (0, 0, 0)
     points = 0
     image = None
     level = 0
-    def __init__(self, x, y,space):
-        mass =self.size * 0.01
-        moment = pymunk.moment_for_circle(mass, 0, self.size)
-        self.body = pymunk.Body(mass, moment)
+    sprite = None
+    def __init__(self, x, y):
+        self.time_above_line = 0.0
+        self.mass =self.size * 0.01 
+        moment = pymunk.moment_for_circle(self.mass, 0, self.size)
+        self.body = pymunk.Body(self.mass, moment)
         self.body.position = (x, y)
-
+        
         self.shape = pymunk.Circle(self.body, self.size)
         self.shape.elasticity = 0.5
         self.shape.friction = 1
         self.shape.collision_type = ANIMAL_COLLISION
-        space.add(self.body, self.shape)
 
+        if self.image is None and self.sprite is not None:
+            self.load_sprite()
+        
+    @classmethod
+    def load_sprite(cls):
+        cls.image = pygame.image.load(cls.sprite).convert_alpha()
+        rect = cls.image.get_bounding_rect()
+        cls.image = cls.image.subsurface(rect)
+        cls.image = pygame.transform.smoothscale(cls.image, (cls.size * 2, cls.size * 2))
+    
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, (int(self.shape.body.position.x), int(self.shape.body.position.y)), self.size)
+        rotated = pygame.transform.rotate(self.image, -math.degrees(self.body.angle))
+        rect = rotated.get_rect(center = self.body.position)
+        screen.blit(rotated,rect)
 
 
-class Souris(Animal):
+class Mouse(Animal):
     size = 14
     points = 1
-    sprite = "none"
-    color = "gray"
+    sprite = ASSETS_DIR / "mouse.png"
 
 
 class Hamster(Animal):
     size = 18
     points = 3
-    sprite = "none"
-    color = "brown"
+    sprite = ASSETS_DIR / "hamster.png"
 
 
-class Renard(Animal):
+class Fox(Animal):
     size = 36
     points = 15
-    sprite = "none"
-    color = "orange"
+    sprite =  ASSETS_DIR /"fox.png"
 
 
-class Chien(Animal):
+class Dog(Animal):
     size = 44
     points = 21
-    sprite = "none"
-    color = "black"
+    sprite = ASSETS_DIR / "dog.png"
 
-class Mouton(Animal):
+
+class Sheep(Animal):
     size = 53
     points = 28
-    sprite = "none"
-    color = "white"
+    sprite =  ASSETS_DIR / "sheep.png"
 
-class Vache(Animal):
+
+class Cow(Animal):
     size = 63
     points = 36
-    sprite = "none"
-    color = "blue"
+    sprite = ASSETS_DIR /"cow.png"
+
+class Dragon(Animal):
+    size = 85
+    points = 70
+    sprite = ASSETS_DIR / "dragon.png"

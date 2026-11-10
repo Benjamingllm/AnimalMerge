@@ -1,6 +1,25 @@
-class Settings:
-    def __init__(self):
-        self.window_width = 800
-        self.window_height = 600
-        self.fps = 60
-        self.background_color = 'purple'
+from pathlib import Path
+
+
+ASSETS_DIR = Path(__file__).parent / "assets"
+SCORES_FILE = Path(__file__).parent / "scores.json"
+
+PHYSICS_TIME_STEP = 1 / 120.0
+GRAVITY = (0, 900)
+
+LOSE_DELAY = 2
+DROP_COOLDOWN = 0.5 
+
+CONTAINER_X = 200
+CONTAINER_Y = 150
+CONTAINER_WIDTH = 400
+CONTAINER_HEIGHT = 400
+
+PENDING_Y = 50
+
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+FPS = 60
+
+
+
