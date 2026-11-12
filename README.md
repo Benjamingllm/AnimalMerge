@@ -7,14 +7,16 @@ perdue quand la pile dépasse la ligne rouge.
 Développé avec **pygame-ce** (affichage, clavier, souris) et **pymunk** (moteur
 physique 2D : gravité, collisions, rotation des animaux).
 
+![Partie en cours : des animaux empilés dans la caisse](docs/apercu.png)
+
 ## Installation
 
 
 Prérequis : Python 3.10 ou plus récent (développé avec Python 3.15).
 
 ```bash
-git clone <url-du-depot>
-cd jeux-animaux
+git clone https://github.com/Benjamingllm/AnimalMerge.git
+cd AnimalMerge
 python -m venv .venv
 ```
 
@@ -35,7 +37,7 @@ pip install -r requirements.txt
 
 ## Lancer le jeu
 
-Depuis le dossier `jeux-animaux/` :
+Depuis le dossier `AnimalMerge/` :
 
 ```bash
 python main.py
@@ -80,7 +82,7 @@ Ce fichier est ignoré par git : chaque installation a ses propres scores.
 ## Organisation du code
 
 ```
-jeux-animaux/
+AnimalMerge/
 ├── main.py              point d'entrée
 ├── requirements.txt     dépendances
 └── animal_merge/
